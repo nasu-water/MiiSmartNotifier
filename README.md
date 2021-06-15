@@ -24,8 +24,8 @@
 ---
 ## S.M.A.R.T Attributes
 ##### This app will check for below attributes in s.m.a.r.t information.  If your HDD does not support or has no attribute as follows, this app might not work properly.
-##### If the HDD's s.m.a.r.t's worst value is less than the `warn` value in `config.json` it will raise a warning alert. The same thing works for error alerts.
-##### `194:temperature_celsius` is the only exception. If the worst value is **above** than the config value it'll raise an alert.
+##### If the s.m.a.r.t worst value acquired from HDD is less than the `warn` value in `config.json` it will raise a warning alert. The same thing works for error alerts.
+##### `194:temperature_celsius` is the only exception. If the worst value is **more** than the config value it'll raise an alert.
 ##### When `warn` or `error` value is set 0 in `config.json` it'll replace as threshold value from its HDD.
 
 | id | attribute name | warning(default) | error(default)|

@@ -1,0 +1,33 @@
+{
+    "notification" : {
+	"token" : "your_line_notification_token",
+	"api_url" : "https://notify-api.line.me/api/notify"
+    },
+
+    "" : [
+	"Set each attribute 'warn' and 'error' values.",
+	"If the exact s.m.a.r.t worst value extracted from the device is less than each set attribute's value, an alert will be sent via Line.",
+	"However, for 'temperature_celsius', if the exact s.m.a.r.t worst value is greater than set value, it'll raise an alert.",
+	"Do NOT change the value below for 'id'.",
+	"If '0' is set as 'warn' or 'error' value, the threshold value extracted from the device will be used as an alert value.",
+	"'Warn' and 'error' values below are just examples.",
+	"Feel free to adjust these values to your device."
+    ],    
+    "smart" : [
+	{"id" :   1, "name" : "raw_read_error_rate"     , "warn" :  40, "error" :  0},
+	{"id" :   3, "name" : "spin_up_time"            , "warn" :  60, "error" : 40},
+	{"id" :   4, "name" : "start_stop_count"        , "warn" :  50, "error" :  0},
+	{"id" :   5, "name" : "realocated_sector_count" , "warn" : 100, "error" : 98},
+	{"id" :   7, "name" : "seek_error_rate"         , "warn" :  50, "error" :  0},
+	{"id" :   9, "name" : "power_on_hours"          , "warn" :  50, "error" : 25},
+	{"id" :  10, "name" : "spin_retry_count"        , "warn" :  99, "error" : 98},
+	{"id" :  12, "name" : "power_cycle_count"       , "warn" :  50, "error" : 20},
+	{"id" : 194, "name" : "temperature_celsius"     , "warn" :  55, "error" : 60},
+	{"id" : 197, "name" : "current_pending_sector"  , "warn" : 100, "error" : 98}
+    ]
+    
+}
+
+
+
+	

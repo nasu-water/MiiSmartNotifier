@@ -16,6 +16,12 @@
 ##### Triggering by scheduling app such as `cron` would notify periodically.
 ##### Note : This application can only be executed by superuser due to `smartctl(smartmontools)` can only aquire s.m.a.r.t information by superuser.
 ---
+## Environment & Softwares
+- Python 3.7.5
+- smartctl 6.6
+- pySMART 1.0
+- Raspbeey Pi 4 / Raspbian 10
+---
 ## S.M.A.R.T Attributes
 ##### This app will check for below attributes in s.m.a.r.t information.  If your HDD does not support or has no attribute as follows, this app might not work properly.
 ##### If the HDD's s.m.a.r.t's worst value is less than the `warn` value in `config.json` it will raise a warning alert. The same thing works for error alerts.
@@ -34,12 +40,6 @@
 |12(0C)|Power Cycle Count|50|20|
 |194(C2)|Temperature Celsius|55|60|
 |197(C5)|Current Pending Sector|100|98|
----
-## Environment & Softwares
-- Python 3.7.5
-- smartctl 6.6
-- pySMART 1.0
-- Raspbeey Pi 4 / Raspbian 10
 ---
 ## Caution
 Use at your own risk.

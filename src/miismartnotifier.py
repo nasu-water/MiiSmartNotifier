@@ -84,9 +84,9 @@ class MiiSmartNotify:
         message = copy.copy(orig_message)
 
         # Only for 'temperature_celsius', the comparison should be vise versa.
-        #comp = ">" if attribute["id"] == 194 else "<"
+        comp = ">" if attribute["id"] == 194 else "<"
         # Test
-        comp = "<" if attribute["id"] == 194 else ">"
+        #comp = "<" if attribute["id"] == 194 else ">"
 
         levels = ['error','warn']        
         limits = list(map(lambda lev:str(int(attribute[lev])) if not attribute[lev] == 0 else str(int(device_attribute.thresh)), levels))
@@ -133,6 +133,8 @@ class MiiSmartNotify:
         headers = {'Authorization': f'Bearer {line_notify_token}'}
 
         notification_message = ''
+        notification_flag = False
+        
         for message in messages:
             if message.status == 0:
                 status_message = "\n正常@" + message.device_name + '\n'
@@ -142,12 +144,14 @@ class MiiSmartNotify:
                 status_message = "\n警告@" if message.status == 1 else "\n深刻なエラー@"
                 status_message += message.device_name + '\n'
                 main_message = '\n'.join(message.notification_message)
+                notification_flag = True
                 
             notification_message += status_message + main_message + '\n'
 
         data = {'message': f'{notification_message}'}
-        print(data)
-        #requests.post(line_notify_api, headers = headers, data = data)
+
+        if notification_flag or self.notif_config["dont_send_when_no_alert"] == 0:
+            requests.post(line_notify_api, headers = headers, data = data)
 
         
     def start(self):

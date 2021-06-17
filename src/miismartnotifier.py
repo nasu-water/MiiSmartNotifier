@@ -3,6 +3,7 @@ import json
 import copy
 import sqlite3
 import itertools
+import argparse
 
 from pySMART import DeviceList
 from pySMART import Device
@@ -29,20 +30,30 @@ class NotificationMessage:
             
 class MiiSmartNotify:
     
-    def __init__(self):
+    def __init__(self, args):
         config_file_name = "./config.json"
         config = self.read_config_file(config_file_name)
 
         self.smart_config = config['smart']
         self.notif_config = config['notification']
-
+        self.args = args
         self.create_db()
 
-        
+            
     def __del__(self):
         self.conn.close()
 
-        
+    def remove_all_table(self):
+        remove_table_sql = 'DROP TABLE {}'.format(self.table_name)
+        self.conn.execute(remove_table_sql)
+        self.conn.commit()
+
+    def remove_device_history(self, device_name):
+        device_history_delete_sql = 'DELETE FROM {} WHERE device = ?'.format(self.table_name)
+        self.conn.execute(device_history_delete_sql, [device_name])
+        self.conn.commit()
+
+                
     def create_db(self):
         self.db_name = 'history.db'
         self.table_name = 'message_history_table'
@@ -59,6 +70,7 @@ class MiiSmartNotify:
         self.cursor.execute(table_create_sql)
         self.conn.commit()
 
+        
     def read_config_file(self, config_file_name):
         with open(config_file_name, mode='r') as conf_file:
             config = json.load(conf_file)
@@ -70,6 +82,11 @@ class MiiSmartNotify:
         return devices_list
 
     
+    def get_device(self, device_name):
+        device = Device(device_name)
+        return device
+
+
     def validate_device(self, device):
         message = NotificationMessage()
         message.device_name = device.name
@@ -94,7 +111,6 @@ class MiiSmartNotify:
         target_attribute = dict(zip(levels,limits))
 
         device_attribute_worst = str(int(device_attribute.worst))
-
 
         for level in levels:
             row_exists = self.in_table(message.device_name, level, attribute['name'])
@@ -155,18 +171,39 @@ class MiiSmartNotify:
 
         
     def start(self):
+        if self.args.remove_all:
+            self.remove_all_table()
+            
+        elif self.args.remove_device:
+            self.remove_device_history(args.remove_device)
 
-        devices_list = self.get_devices_list()
-        
-        messages = []
-        for device in devices_list.devices:
+        elif self.args.device:
+            device = self.get_device(self.args.device)
+            messages = []
             messages.append(self.validate_device(device))
+            self.notify_messages(messages)
 
-        self.notify_messages(messages)
+        else:
+            devices_list = self.get_devices_list()
+            messages = []
+            for device in devices_list.devices:
+                messages.append(self.validate_device(device))
+
+            self.notify_messages(messages)
 
             
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='S.M.A.R.T value check and send notification.')
 
-    msn = MiiSmartNotify()
+    parser.add_argument('-d', '--device', type = str, help = 'Check and notify for the assgined device.')
+    parser.add_argument('-r','--remove-device', type = str, help = 'Remove specific device\'s history')
+    parser.add_argument('-R', '--remove-all', action='store_true', help = 'Remove all decies\'s history')
+
+    args = parser.parse_args()
+
+    
+    msn = MiiSmartNotify(args)
     msn.start()
+
+
 
